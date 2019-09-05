@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnetmvcapp
+  name: aspnetmvcapp-deployment
 spec:
   selector:
     matchLabels:
@@ -58,7 +58,7 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: aspnetmvcapp.962e3580783d4a82b7b0.eastus.aksapp.io
+  - host: aspnetmvcapp.8d00e524230642a99b15.westus.aksapp.io
     http:
       paths:
       - backend:
