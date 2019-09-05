@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: aspnetmvcapp
-        image: containersample1.azurecr.io/kararchana/aspnetmvcapp:#{Build.BuildId}#
+        image: containersample1.azurecr.io/kararchana/dotnetframeworkdocker:#{Build.BuildId}#
         imagePullPolicy: Always
         ports:
         - containerPort: 80
