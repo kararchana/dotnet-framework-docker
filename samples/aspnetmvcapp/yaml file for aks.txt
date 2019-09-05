@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: iotfactoryfloor-deployment
+  name: aspnetmvcapp-deployment
 spec:
   selector:
     matchLabels:
-      app: iotfactoryfloor
+      app: aspnetmvcapp
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,11 +15,11 @@ spec:
   template:
     metadata:
       labels:
-        app: iotfactoryfloor
+        app: aspnetmvcapp
     spec:
       containers:
-      - name: iotfactoryfloor
-        image: containerforiot.azurecr.io/kararchana/rollingdeployment:#{Build.BuildId}#
+      - name: aspnetmvcapp
+        image: containersample.azurecr.io/kararchana/aspnetmvcapp:#{Build.BuildId}#
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -36,40 +36,40 @@ spec:
               fieldRef:
                 fieldPath: metadata.name
       imagePullSecrets:
-      - name: iotapplication
+      - name: aksdemo
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: iotfactoryfloor
+  name: aspnetmvcapp
 spec:
   type: LoadBalancer
   ports:
   - port: 80
     targetPort: 9001
   selector:
-    app: iotfactoryfloor
+    app: aspnetmvcapp
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: iotfactoryfloor
+  name: aspnetmvcapp
   annotations:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: iotfactoryfloor.962e3580783d4a82b7b0.eastus.aksapp.io
+  - host: aspnetmvcapp.962e3580783d4a82b7b0.eastus.aksapp.io
     http:
       paths:
       - backend:
-          serviceName: iotfactoryfloor
+          serviceName: aspnetmvcapp
           servicePort: 80
         path: /
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: iotfactoryfloor
+  name: aspnetmvcapp
   namespace: default
 spec:
   minReplicas: 5
@@ -77,5 +77,5 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: iotfactoryfloor-deployment
+    name: aspnetmvcapp-deployment
   targetCPUUtilizationPercentage: 10
