@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iotfactoryfloor-deployment
+spec:
+  selector:
+    matchLabels:
+      app: iotfactoryfloor
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: iotfactoryfloor
+    spec:
+      containers:
+      - name: iotfactoryfloor
+        image: containerforiot.azurecr.io/kararchana/rollingdeployment:#{Build.BuildId}#
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+        env:
+          - name: PODNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+      imagePullSecrets:
+      - name: iotapplication
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iotfactoryfloor
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 9001
+  selector:
+    app: iotfactoryfloor
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: iotfactoryfloor
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+  rules:
+  - host: iotfactoryfloor.962e3580783d4a82b7b0.eastus.aksapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: iotfactoryfloor
+          servicePort: 80
+        path: /
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: iotfactoryfloor
+  namespace: default
+spec:
+  minReplicas: 5
+  maxReplicas: 10
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: iotfactoryfloor-deployment
+  targetCPUUtilizationPercentage: 10
