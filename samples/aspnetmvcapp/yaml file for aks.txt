@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnetmvcapp-deployment
+  name: aspnetmvcapp
 spec:
   selector:
     matchLabels:
@@ -77,5 +77,5 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: aspnetmvcapp-deployment
+    name: aspnetmvcapp
   targetCPUUtilizationPercentage: 10
