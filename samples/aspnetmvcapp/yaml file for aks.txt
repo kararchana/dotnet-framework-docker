@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aspnetmvcapp-deployment
+  name: dotnetframeworkdocker
 spec:
   selector:
     matchLabels:
-      app: aspnetmvcapp
+      app: dotnetframeworkdocker
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,10 +15,10 @@ spec:
   template:
     metadata:
       labels:
-        app: aspnetmvcapp
+        app: dotnetframeworkdocker
     spec:
       containers:
-      - name: aspnetmvcapp
+      - name: dotnetframeworkdocker
         image: containersample1.azurecr.io/kararchana/dotnetframeworkdocker:#{Build.BuildId}#
         imagePullPolicy: Always
         ports:
@@ -41,14 +41,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: aspnetmvcapp
+  name: dotnetframeworkdocker
 spec:
   type: LoadBalancer
   ports:
   - port: 80
     targetPort: 9001
   selector:
-    app: aspnetmvcapp
+    app: dotnetframeworkdocker
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -58,18 +58,18 @@ metadata:
     kubernetes.io/ingress.class: addon-http-application-routing
 spec:
   rules:
-  - host: aspnetmvcapp.8d00e524230642a99b15.westus.aksapp.io
+  - host: dotnetframeworkdocker.8d00e524230642a99b15.westus.aksapp.io
     http:
       paths:
       - backend:
-          serviceName: aspnetmvcapp
+          serviceName: dotnetframeworkdocker
           servicePort: 80
         path: /
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: aspnetmvcapp
+  name: dotnetframeworkdocker
   namespace: default
 spec:
   minReplicas: 5
@@ -77,5 +77,5 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: aspnetmvcapp
+    name: dotnetframeworkdocker
   targetCPUUtilizationPercentage: 10
